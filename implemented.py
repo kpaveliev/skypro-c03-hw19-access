@@ -9,11 +9,13 @@ from service.user import UserService
 from service.auth import AuthService
 from setup_db import db
 
+# Create daos
 director_dao = DirectorDAO(session=db.session)
 genre_dao = GenreDAO(session=db.session)
 movie_dao = MovieDAO(session=db.session)
 user_dao = UserDAO(session=db.session)
 
+# Create services
 director_service = DirectorService(dao=director_dao)
 genre_service = GenreService(dao=genre_dao)
 movie_service = MovieService(dao=movie_dao)

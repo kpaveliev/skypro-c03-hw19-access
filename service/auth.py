@@ -18,7 +18,7 @@ class AuthService:
         """
         Generate access and refresh JWT tokens
 
-        :raises HTTPException:
+        :raises HTTPException: If no user found or password is incorrect
         """
 
         # Get user and check existence
@@ -54,7 +54,7 @@ class AuthService:
         }
 
     def approve_token(self, refresh_token: str) -> dict:
-        """Approve refresh token and generate new pair of tokens"""
+        """Approve refresh token and generate a new pair of tokens"""
         data = jwt.decode(refresh_token, JWT_SECRET, algorithms=JWT_ALGORITHM)
         username = data.get('username')
         return self.generate_tokens(username, None, is_refresh=True)

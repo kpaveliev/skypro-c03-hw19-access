@@ -34,7 +34,7 @@ def create_data(app, db):
         db.create_all()
 
         u1 = User(username="vasya", password="my_little_pony", role="user")
-        u2 = User(username="oleg", password="qwerty", role="user")
+        u2 = User(username="ivan", password="qwerty", role="user")
         u3 = User(username="oleg", password="P@ssw0rd", role="admin")
 
         with db.session.begin():

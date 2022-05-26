@@ -1,7 +1,7 @@
 import base64
 import hashlib
 import hmac
-from typing import List, BinaryIO
+from typing import List
 
 from constants import PWD_HASH_ITERATIONS, PWD_HASH_SALT
 from dao.user import UserDAO
