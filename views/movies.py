@@ -2,13 +2,14 @@ from flask import request
 from flask_restx import Resource, Namespace
 
 from dao.model.movie import MovieSchema
-from implemented import movie_service
+from implemented import movie_service, auth_service
 
 movie_ns = Namespace('movies')
 
 
 @movie_ns.route('/')
 class MoviesView(Resource):
+    @auth_service.auth_required
     def get(self):
         director = request.args.get("director_id")
         genre = request.args.get("genre_id")
@@ -22,6 +23,7 @@ class MoviesView(Resource):
         res = MovieSchema(many=True).dump(all_movies)
         return res, 200
 
+    @auth_service.admin_required
     def post(self):
         req_json = request.json
         movie = movie_service.create(req_json)
@@ -40,7 +42,7 @@ class MovieView(Resource):
         if "id" not in req_json:
             req_json["id"] = bid
         movie_service.update(req_json)
-        return "", 204
+        return "", 201
 
     def delete(self, bid):
         movie_service.delete(bid)
