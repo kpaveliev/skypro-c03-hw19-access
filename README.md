@@ -1,6 +1,8 @@
 # SkyPro.Python course
 ## Homework 19. Flask-Restx access, tokens
 
+**Refactored with two databases**
+
 **Authentication views, methods**
 
 1. views/auth.py
