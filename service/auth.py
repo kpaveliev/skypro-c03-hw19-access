@@ -1,6 +1,6 @@
 import datetime
 import calendar
-from typing import Union
+from typing import Union, Callable
 
 import jwt
 from flask import request
@@ -40,12 +40,12 @@ class AuthService:
 
         # Generate access token
         min30 = datetime.datetime.utcnow() + datetime.timedelta(minutes=30)
-        data['exp'] = calendar.timegm(min30.timetuple())
+        data['exp']: int = calendar.timegm(min30.timetuple())
         access_token = jwt.encode(data, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
         # Generate refresh token
         day130 = datetime.datetime.utcnow() + datetime.timedelta(days=130)
-        data['exp'] = calendar.timegm(day130.timetuple())
+        data['exp']: int = calendar.timegm(day130.timetuple())
         refresh_token = jwt.encode(data, JWT_SECRET, algorithm=JWT_ALGORITHM)
 
         return {
@@ -54,13 +54,24 @@ class AuthService:
         }
 
     def approve_token(self, refresh_token: str) -> dict:
-        """Approve refresh token and generate a new pair of tokens"""
-        data = jwt.decode(refresh_token, JWT_SECRET, algorithms=JWT_ALGORITHM)
-        username = data.get('username')
-        return self.generate_tokens(username, None, is_refresh=True)
+        """
+        Approve refresh token and generate a new pair of tokens
+
+        :raise HTTPException: if no valid token passed
+        """
+        # Check if token is valid
+        try:
+            data = jwt.decode(refresh_token, JWT_SECRET, algorithms=JWT_ALGORITHM)
+        except Exception:
+            abort(401)
+        # Generate new pair
+        else:
+            username = data.get('username')
+            new_tokens = self.generate_tokens(username, None, is_refresh=True)
+            return new_tokens
 
     @staticmethod
-    def auth_required(func):
+    def auth_required(func: Callable):
         """Check token passed is correct"""
         def wrapper(*args, **kwargs):
             # Check if authorization credentials were passed and get token
@@ -70,7 +81,7 @@ class AuthService:
             data = request.headers['Authorization']
             token = data.split("Bearer ")[-1]
 
-            # Decode token
+            # Decode and check token
             try:
                 jwt.decode(token, JWT_SECRET, algorithms=JWT_ALGORITHM)
             except Exception as e:
@@ -81,7 +92,7 @@ class AuthService:
         return wrapper
 
     @staticmethod
-    def admin_required(func):
+    def admin_required(func: Callable) -> Callable:
         """Check if the role is admin"""
         def wrapper(*args, **kwargs):
             # Check if authorization credentials were passed and get token

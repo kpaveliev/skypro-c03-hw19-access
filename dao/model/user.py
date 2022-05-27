@@ -4,6 +4,7 @@ from setup_db import db
 
 
 class User(db.Model):
+    __bind_key__ = 'users'
     __tablename__ = 'user'
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String)

@@ -42,7 +42,7 @@ class UserService:
     def create_hash(self, password: str) -> bytes:
         """Hash password passed with sha256"""
         # Hash password
-        hash_digest = hashlib.pbkdf2_hmac(
+        hash_digest: bytes = hashlib.pbkdf2_hmac(
             'sha256',
             password.encode('utf-8'),
             PWD_HASH_SALT,
@@ -61,10 +61,10 @@ class UserService:
         """Compare password passed with user password in db"""
 
         # Decode password from the database into binary
-        decoded_digest = base64.b64decode(password_hash)
+        decoded_digest: bytes = base64.b64decode(password_hash)
 
         # Hash password passed
-        passed_hash = hashlib.pbkdf2_hmac(
+        passed_hash: bytes = hashlib.pbkdf2_hmac(
             'sha256',
             password_passed.encode('utf-8'),
             PWD_HASH_SALT,
