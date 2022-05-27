@@ -50,7 +50,10 @@ class UserService:
         )
         # Encode with base64 for storage
         encoded_digest = base64.b64encode(hash_digest)
+        # print(hash_digest)
+        # print(encoded_digest)
         return encoded_digest
+        # return hash_digest
 
     def get_by_username(self, username: str) -> User:
         """Get user data by username"""
